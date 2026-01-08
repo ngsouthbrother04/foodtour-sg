@@ -71,7 +71,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant, highlight }
         )}
 
         {/* Location */}
-        <div className="flex items-start gap-1 text-gray-600">
+        <div className="flex items-start gap-1 text-gray-600 dark:text-gray-400">
           <EnvironmentOutlined className="mt-1 flex-shrink-0" />
           <Text className="text-sm">
             {restaurant.address && `${restaurant.address}, `}
@@ -82,7 +82,7 @@ const RestaurantCard: React.FC<RestaurantCardProps> = ({ restaurant, highlight }
         {/* Price */}
         {restaurant.priceRange.display && (
           <div className="flex items-center gap-1">
-            <DollarOutlined className="text-orange-500" />
+            <DollarOutlined className="text-primary-500" />
             <span className="price-tag">{restaurant.priceRange.display}</span>
           </div>
         )}

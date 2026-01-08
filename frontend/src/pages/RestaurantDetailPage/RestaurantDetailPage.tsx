@@ -12,6 +12,7 @@ import {
   Col,
   Alert,
   Descriptions,
+  Tooltip,
 } from 'antd';
 import {
   ArrowLeftOutlined,
@@ -19,8 +20,10 @@ import {
   ClockCircleOutlined,
   DollarOutlined,
   InfoCircleOutlined,
+  SunOutlined,
+  MoonOutlined,
 } from '@ant-design/icons';
-import { useRestaurant, useSimilarRestaurants } from '../../hooks';
+import { useRestaurant, useSimilarRestaurants, useTheme } from '../../hooks';
 import { RestaurantCard, RestaurantMap } from '../../components';
 
 const { Title, Text, Paragraph } = Typography;
@@ -28,6 +31,7 @@ const { Title, Text, Paragraph } = Typography;
 const RestaurantDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { mode, toggleTheme } = useTheme();
 
   const { data: restaurantData, isLoading, error } = useRestaurant(id || '');
   const { data: similarData } = useSimilarRestaurants(id || '', 4);
@@ -37,7 +41,7 @@ const RestaurantDetailPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4">
+      <div className="min-h-screen bg-warm-100 dark:bg-dark-bg p-4 transition-colors">
         <div className="max-w-4xl mx-auto">
           <Skeleton active paragraph={{ rows: 8 }} />
         </div>
@@ -47,7 +51,7 @@ const RestaurantDetailPage: React.FC = () => {
 
   if (error || !restaurant) {
     return (
-      <div className="min-h-screen bg-gray-50 p-4">
+      <div className="min-h-screen bg-warm-100 dark:bg-dark-bg p-4 transition-colors">
         <div className="max-w-4xl mx-auto">
           <Alert
             message="Không tìm thấy quán ăn"
@@ -82,9 +86,9 @@ const RestaurantDetailPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-white shadow-sm sticky top-0 z-10">
-        <div className="max-w-4xl mx-auto px-4 py-3">
+    <div className="min-h-screen bg-warm-100 dark:bg-dark-bg transition-colors">
+      <div className="bg-white dark:bg-dark-card shadow-sm sticky top-0 z-10 transition-colors">
+        <div className="max-w-4xl mx-auto px-4 py-3 flex justify-between items-center">
           <Button
             type="text"
             icon={<ArrowLeftOutlined />}
@@ -92,6 +96,15 @@ const RestaurantDetailPage: React.FC = () => {
           >
             Quay lại
           </Button>
+          <Tooltip title={mode === 'light' ? 'Chế độ tối' : 'Chế độ sáng'}>
+            <button
+              onClick={toggleTheme}
+              className="theme-toggle text-lg"
+              aria-label="Toggle theme"
+            >
+              {mode === 'light' ? <MoonOutlined /> : <SunOutlined />}
+            </button>
+          </Tooltip>
         </div>
       </div>
 
@@ -171,7 +184,10 @@ const RestaurantDetailPage: React.FC = () => {
                       <InfoCircleOutlined />
                       Ghi chú
                     </Text>
-                    <Paragraph className="bg-gray-50 p-3 rounded-lg !mb-0">
+                    <Paragraph 
+                      className="bg-gray-50 dark:bg-dark-card p-3 rounded-lg !mb-0 whitespace-pre-wrap"
+                      ellipsis={{ rows: 5, expandable: true, symbol: 'Xem thêm' }}
+                    >
                       {restaurant.note}
                     </Paragraph>
                   </div>
@@ -182,7 +198,10 @@ const RestaurantDetailPage: React.FC = () => {
                     <Text strong className="flex items-center gap-1 mb-2">
                       ⭐ Review
                     </Text>
-                    <Paragraph className="bg-orange-50 p-3 rounded-lg !mb-0 italic">
+                    <Paragraph 
+                      className="bg-primary-50 dark:bg-dark-card p-3 rounded-lg !mb-0 italic whitespace-pre-wrap"
+                      ellipsis={{ rows: 5, expandable: true, symbol: 'Xem thêm' }}
+                    >
                       "{restaurant.review}"
                     </Paragraph>
                   </div>
@@ -193,7 +212,10 @@ const RestaurantDetailPage: React.FC = () => {
                     <Text strong className="flex items-center gap-1 mb-2">
                       💬 Feedback
                     </Text>
-                    <Paragraph className="bg-blue-50 p-3 rounded-lg !mb-0">
+                    <Paragraph 
+                      className="bg-blue-50 dark:bg-dark-card p-3 rounded-lg !mb-0 whitespace-pre-wrap"
+                      ellipsis={{ rows: 5, expandable: true, symbol: 'Xem thêm' }}
+                    >
                       {restaurant.feedback}
                     </Paragraph>
                   </div>

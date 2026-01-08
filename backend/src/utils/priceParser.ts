@@ -6,7 +6,8 @@ interface PriceRange {
 
 // Parse các định dạng giá: "20k-25k", "<50k", ">100k", "45k", "Nhiều giá"
 export function parsePrice(priceStr: string | null | undefined): PriceRange {
-  const display = priceStr?.trim() || '';
+  // Xóa dấu ngoặc kép thừa từ CSV
+  const display = priceStr?.trim().replace(/^["']|["']$/g, '').trim() || '';
   
   if (!display || display.toLowerCase() === 'nhiều giá') {
     return { min: null, max: null, display: display || 'Liên hệ' };

@@ -4,8 +4,7 @@ Website khám phá các quán ăn/nhà hàng ở Sài Gòn, được xây dựng
 
 ## Author
 
-**ngsouthbrother04**  
-[LinkedIn](https://www.linkedin.com/in/anh-nguyen-496957285/)
+**[ngsouthbrother04](https://www.linkedin.com/in/anh-nguyen-496957285/)**  
 
 ## Tech Stack
 

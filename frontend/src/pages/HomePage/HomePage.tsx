@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Row, Col, Pagination, Empty, Button, Typography, Alert } from 'antd';
-import { ReloadOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { Row, Col, Pagination, Empty, Button, Typography, Alert, Tooltip } from 'antd';
+import { ReloadOutlined, QuestionCircleOutlined, SunOutlined, MoonOutlined } from '@ant-design/icons';
 import {
   RestaurantCard,
   RestaurantCardSkeleton,
   SearchBar,
   FilterPanel,
 } from '../../components';
-import { useRestaurants, useFilterOptions, useRandomRestaurant } from '../../hooks';
+import { useRestaurants, useFilterOptions, useRandomRestaurant, useTheme } from '../../hooks';
 import { SearchParams, SortField, SortOrder } from '../../types';
 
 const { Title, Text } = Typography;
@@ -16,6 +16,7 @@ const { Title, Text } = Typography;
 const HomePage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { mode, toggleTheme } = useTheme();
 
   const getFiltersFromURL = (): SearchParams => ({
     q: searchParams.get('q') || undefined,
@@ -70,13 +71,23 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-8 px-4">
+    <div className="min-h-screen bg-warm-100 dark:bg-dark-bg transition-colors duration-300">
+      <div className="header-gradient text-white py-8 px-4 relative">
+        <Tooltip title={mode === 'light' ? 'Chế độ tối' : 'Chế độ sáng'}>
+          <button
+            onClick={toggleTheme}
+            className="theme-toggle absolute top-4 right-4 text-lg"
+            aria-label="Toggle theme"
+          >
+            {mode === 'light' ? <MoonOutlined /> : <SunOutlined />}
+          </button>
+        </Tooltip>
+        
         <div className="max-w-6xl mx-auto">
           <Title level={1} className="!text-white !mb-2">
             🍜 Food Tour Sài Gòn
           </Title>
-          <Text className="text-orange-100 text-lg block mb-6">
+          <Text className="text-primary-200 text-lg block mb-6">
             Khám phá ẩm thực Sài Gòn từ gợi ý của cộng đồng
           </Text>
 
@@ -92,7 +103,7 @@ const HomePage: React.FC = () => {
               onClick={handleRandomClick}
               loading={isRandomFetching}
               size="large"
-              className="bg-white"
+              className="bg-white/90 hover:bg-white border-0"
             >
               Hôm nay ăn gì?
             </Button>
@@ -112,7 +123,7 @@ const HomePage: React.FC = () => {
                     e.preventDefault();
                     navigate(`/restaurant/${randomData.data.id}`);
                   }}
-                  className="font-bold text-orange-600 hover:text-orange-700 hover:underline cursor-pointer"
+                  className="font-bold text-primary-600 dark:text-primary-400 hover:text-primary-700 dark:hover:text-primary-300 hover:underline cursor-pointer"
                 >
                   {randomData.data.name}
                 </a>{' '}
