@@ -5,6 +5,8 @@ export const config = {
   nodeEnv: process.env.NODE_ENV || 'development',
   dataDir: process.env.CSV_DATA_PATH || path.join(__dirname, '../../../data'),
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173',
+  // Cho phép nhiều origins trong production
+  corsOrigins: (process.env.CORS_ORIGINS || process.env.FRONTEND_URL || 'http://localhost:5173').split(','),
   rateLimit: {
     windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '60000', 10),
     maxRequests: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS || '100', 10),

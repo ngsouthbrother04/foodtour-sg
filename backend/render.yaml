@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: foodtour-sg-api
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: CSV_DATA_PATH
+        value: ./data

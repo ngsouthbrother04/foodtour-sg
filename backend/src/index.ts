@@ -26,7 +26,7 @@ function createApp() {
   app.use(limiter);
 
   app.use(cors({
-    origin: config.frontendUrl,
+    origin: config.corsOrigins,
     credentials: true,
   }));
 
