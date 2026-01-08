@@ -2,6 +2,13 @@
 
 Website khám phá các quán ăn/nhà hàng ở Sài Gòn, được xây dựng từ các file excel tổng hợp được chia sẻ trên mạng xã hội Việt Nam.
 
+## 🌐 Live Demo
+
+- **Frontend**: [https://foodtour-sg.vercel.app](https://foodtour-sg.vercel.app)
+- **Backend API**: [https://foodtour-sg-api.onrender.com](https://foodtour-sg-api.onrender.com)
+
+> ⚠️ Backend free tier sẽ "sleep" sau 15 phút không có request. Request đầu tiên có thể mất ~30s.
+
 ## Author
 
 **[ngsouthbrother04](https://www.linkedin.com/in/anh-nguyen-496957285/)**  
@@ -13,41 +20,39 @@ Website khám phá các quán ăn/nhà hàng ở Sài Gòn, được xây dựng
 | Frontend | React 18 + Vite + TypeScript |
 | UI | Ant Design 5 + TailwindCSS |
 | State | React Query |
+| Maps | Leaflet.js |
 | Backend | Express.js + TypeScript |
 | Data | CSV (PapaParse) + In-memory cache |
+| Deploy | Vercel (FE) + Render (BE) |
 
 ## Architecture
 
 ```mermaid
 flowchart TB
-    subgraph Frontend
+    subgraph Frontend["Frontend (Vercel)"]
         UI[React SPA] --> RQ[React Query]
     end
     
-    subgraph Backend
+    subgraph Backend["Backend (Render)"]
         API[Express API] --> SVC[Service Layer]
         SVC --> CACHE[In-memory Cache]
-    end
-    
-    subgraph Data
-        CSV1[File CSV 1]
-        CSV2[File CSV 2]
+        CACHE --> CSV[CSV Files]
     end
     
     RQ -->|HTTP| API
-    CACHE --> CSV1
-    CACHE --> CSV2
 ```
 
-## Quick Start
+## Quick Start (Local Development)
 
 ```bash
 # Backend (port 3001)
-cd backend && cp .env.example .env && npm i && npm run dev
+cd backend && npm install && npm run dev
 
-# Frontend (port 5173)
-cd frontend && npm i && npm run dev
+# Frontend (port 5173) - new terminal
+cd frontend && npm install && npm run dev
 ```
+
+Mở http://localhost:5173
 
 ## API
 
@@ -58,37 +63,15 @@ cd frontend && npm i && npm run dev
 | GET | `/api/v1/restaurants/:id/similar` | Quán tương tự |
 | GET | `/api/v1/restaurants/filters` | Danh sách filter options |
 | GET | `/api/v1/restaurants/random` | Random 1 quán |
-| POST | `/api/v1/admin/reload` | Reload CSV data |
+| GET | `/health` | Health check |
 
 **Query params:** `q`, `district`, `category`, `minPrice`, `maxPrice`, `page`, `limit`, `sort`, `order`
-
-## Data Schema
-
-```typescript
-interface Restaurant {
-  id: string;
-  name: string;
-  dish: string;
-  category: string;
-  address: string;
-  district: string;           
-  openingHours: string | null;
-  priceRange: {
-    min: number | null;
-    max: number | null;
-    display: string;         
-  };
-  note: string | null;
-  review: string | null;
-  feedback: string | null;
-  source: 'foodtour' | 'saigon_everyfood';
-}
-```
 
 ## Project Structure
 
 ```
 ├── backend/
+│   ├── data/              # CSV data files
 │   └── src/
 │       ├── config/        # Env config
 │       ├── controllers/   # Request handlers
@@ -100,24 +83,24 @@ interface Restaurant {
 ├── frontend/
 │   └── src/
 │       ├── components/    # FilterPanel, RestaurantCard, SearchBar, Map
-│       ├── hooks/         # React Query hooks
+│       ├── hooks/         # React Query hooks, useTheme
 │       ├── pages/         # HomePage, RestaurantDetailPage
 │       ├── services/      # API client
 │       └── types/         # Shared types
-└── data/                  # CSV files
 ```
 
 ## Features
 
-- Full-text search (tên quán, món, địa chỉ)
-- Filter: quận, category, giá
-- Pagination + sorting
-- Random suggestion ("Hôm nay ăn gì?")
-- Restaurant detail + similar suggestions
-- Leaflet.js map
-- URL state persistence (shareable links)
-- Responsive design
-- Vietnamese locale
+- 🔍 Full-text search (tên quán, món, địa chỉ)
+- 🏷️ Filter: quận, category, giá
+- 📄 Pagination + sorting
+- �� Random suggestion ("Hôm nay ăn gì?")
+- 📍 Restaurant detail + similar suggestions
+- 🗺️ Leaflet.js map integration
+- 🔗 URL state persistence (shareable links)
+- 🌙 Dark/Light mode toggle
+- 📱 Responsive design
+- 🇻🇳 Vietnamese locale
 
 ## Security
 
@@ -126,8 +109,40 @@ interface Restaurant {
 - `zod` - Input validation
 - `winston` - Logging
 
+## Environment Variables
+
+### Backend
+```env
+PORT=3001
+NODE_ENV=development
+CORS_ORIGINS=http://localhost:5173
+```
+
+### Frontend
+```env
+VITE_API_URL=/api/v1
+```
+
+## Deployment
+
+### Backend → Render
+1. Create Web Service, connect GitHub repo
+2. Root Directory: `backend`
+3. Build: `npm install && npm run build`
+4. Start: `npm start`
+5. Add env: `NODE_ENV=production`, `CORS_ORIGINS=https://your-frontend.vercel.app`
+
+### Frontend → Vercel
+1. Import GitHub repo
+2. Root Directory: `frontend`
+3. Add env: `VITE_API_URL=https://your-backend.onrender.com/api/v1`
+
 ## Testing
 
 ```bash
 cd backend && npm test
 ```
+
+## License
+
+MIT
